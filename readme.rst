@@ -2,11 +2,11 @@
 uTimeClock
 ##########
 
-Simple time tracking.
+Simple manual time tracking.
 
-This is a time tracking utility, intended to be used in other text modes such as ORG, reStructuredText or MarkDown.
+This is a time tracking utility, intended to be used in any text mode such as reStructuredText, MarkDown and ORG.
 
-Instead of defining a major mode, this package provides functions to:
+Instead of defining a mode, this package simply provides functions to:
 
 - Clock on/off.
 - Report accumulated time.
@@ -15,7 +15,7 @@ Instead of defining a major mode, this package provides functions to:
 Motivation
 ==========
 
-Other time tracking packages tend to assume you're editing a buffer with the primary purpose of tracking time.
+Automatic time tracking packages tend to assume you're editing a buffer with the primary purpose of tracking time.
 
 This package uses a terse time tracking format which can easily be maintained along side other notes.
 
@@ -96,22 +96,35 @@ Unsupported features:
 - Time spans longer than 24 hours.
 
 
-.. NOT YET IN MELPA.
+Installation
+============
 
-   Installation
-   ============
+The package is `available in melpa <https://melpa.org/#/utimeclock>`__ as ``utimeclock``.
 
-   The package is `available in melpa <https://melpa.org/#/utimeclock>`__ as ``utimeclock``.
+.. code-block:: elisp
 
-   .. code-block:: elisp
+   (use-package utimeclock)
 
-      (use-package utimeclock)
+An example using key bindings:
 
-   Combined with key bindings, for evil-mode:
+.. code-block:: elisp
 
-   .. code-block:: elisp
+   (use-package utimeclock
+     :config
+     (global-set-key (kbd "<f5>") 'utimeclock-toggle)
+     (global-set-key (kbd "<f6>") 'utimeclock-show-summary))
 
-      (use-package utimeclock
-        :config
-        (global-set-key (kbd "<f5>") 'utimeclock-toggle)
-        (global-set-key (kbd "<f6>") 'utimeclock-show-summary))
+
+Alternatives
+============
+
+See `track time <https://melpa.org/#/?q=track%20time>`__ search in Melpa for alternatives.
+
+At the time of writing most of them are much more sophisticated than this package, with features such as:
+
+- Automatically detecting activity.
+- Storing time data in external files.
+- Integrating with org-mode adjenda.
+
+While these may be useful, the intention for this package is to be minimal,
+allowing you to track time without needing to buy into a more complex system.

@@ -1,4 +1,4 @@
-;;; utimeclock.el --- Utility for time tracking -*- lexical-binding: t -*-
+;;; utimeclock.el --- Simple utility for manual time tracking -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2020  Campbell Barton
 
@@ -247,7 +247,7 @@ however when tabs are used the results will be different."
   "Extract the line at POS until the line end.
 
 Lines that end with `utimeclock-line-separator' are considered part of the line,
-therefor we can extract multiple lines into a single logical line of text.
+therefore we can extract multiple lines into a single logical line of text.
 
 Strip PREFIX from each line (when not nil or an empty string)."
   (save-excursion
