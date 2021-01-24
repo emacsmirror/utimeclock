@@ -52,7 +52,7 @@ Note that space before this line is ignored."
   :group 'utimeclock)
 
 (defcustom utimeclock-split-at-fill-column t
-  "Split the lines using `utimeclock-line-separator' once the line exceeds the `fill-column'."
+  "Split lines at `utimeclock-line-separator' when it exceeds `fill-column'."
   :type 'boolean
   :group 'utimeclock)
 
