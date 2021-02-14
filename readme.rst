@@ -11,6 +11,8 @@ Instead of defining a mode, this package simply provides functions to:
 - Clock on/off.
 - Report accumulated time.
 
+Available via `melpa <https://melpa.org/#/utimeclock>`__.
+
 
 Motivation
 ==========
