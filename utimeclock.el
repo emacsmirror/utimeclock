@@ -155,7 +155,9 @@ In this case the current time is used as the end time."
           (setq time-was-incomplete t))
 
         (let
-          ((time-span (- (utimeclock-as-sec-total time-end) (utimeclock-as-sec-total time-start))))
+          (
+            (time-span
+              (- (utimeclock-as-sec-total time-end) (utimeclock-as-sec-total time-start))))
           ;; Wrap
           (when (< time-span 0)
             (setq time-span
