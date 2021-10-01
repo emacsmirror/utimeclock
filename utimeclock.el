@@ -179,7 +179,9 @@ In this case the current time is used as the end time."
 
 
 (defun utimeclock-time-point-previous ()
-  "Return the starting point of `utimeclock-time-prefix' or nil (first moving to the line end)."
+  "Return the starting point of `utimeclock-time-prefix' or nil.
+
+This first moves to the line end."
   (save-excursion
     (end-of-line)
     (if (search-backward utimeclock-time-prefix nil t 1)
@@ -266,7 +268,9 @@ Strip PREFIX from each line (when not nil or an empty string)."
 
 
 (defun utimeclock-end-of-line-multi (pos)
-  "Return the end of line position of POS, taking `utimeclock-extract-line-multi' into account."
+  "Return the end of line position of POS.
+
+This takes `utimeclock-extract-line-multi' into account."
   (save-excursion
     (goto-char pos)
     (let ((eol (utimeclock-line-end-position-nonblank)))
@@ -289,7 +293,9 @@ PREFIX will be added to the beginning of the new line."
 
 
 (defun utimeclock-last-clock-off-duration (time-pos)
-  "Time spent (working) immediately after clocking off for time starting at TIME-POS."
+  "Time spent (working).
+
+Return the time immediately after clocking off for time starting at TIME-POS."
   (or
     (with-demoted-errors
       (let*
@@ -303,7 +309,9 @@ PREFIX will be added to the beginning of the new line."
 
 
 (defun utimeclock-last-clock-on-duration (time-pos)
-  "Time spent (having a break) immediately after clocking on for time starting at TIME-POS."
+  "Time spent (having a break).
+
+Return the time immediately after clocking on for time starting at TIME-POS."
   (or
     (with-demoted-errors
       (let*
@@ -327,7 +335,9 @@ PREFIX will be added to the beginning of the new line."
 ;;;###autoload
 (defun utimeclock-from-context (combine-all-times)
   "Search for STR, accumulate all times after it, return the accumulated time.
-Argument COMBINE-ALL-TIMES keeps searching backwards, accumulating all times in the buffer."
+
+Argument COMBINE-ALL-TIMES keeps searching backwards,
+accumulating all times in the buffer."
   (save-excursion
     (end-of-line)
     (save-match-data
@@ -375,7 +385,9 @@ Argument COMBINE-ALL-TIMES keeps searching backwards, accumulating all times in 
 
 ;;;###autoload
 (defun utimeclock-from-context-summary ()
-  "Return the time before the cursor or contained within the selection (when available)."
+  "Return the time before the cursor or contained within the selection.
+
+When available, otherwise return nil."
   (cond
     ;; Use time from the active-region when set.
     ((use-region-p)
@@ -458,7 +470,8 @@ Otherwise add `utimeclock-time-prefix' and the time after it."
 (defun utimeclock-insert ()
   "Insert the current time at the cursor.
 
-Unlike `utimeclock-toggle' this doesn't pair time ranges or ensure `utimeclock-time-prefix' text."
+Unlike `utimeclock-toggle' this doesn't pair time ranges or
+ensure `utimeclock-time-prefix' text."
   (interactive)
 
   (let ((time-string (utimeclock-current-time-as-string)))
