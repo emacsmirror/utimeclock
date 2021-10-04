@@ -87,12 +87,16 @@ This controls the values entered as well as behavior wrapping time values."
   (let ((v (split-string str ":")))
     (+
       (* 3600 (string-to-number (pop v))) ;; Hours.
-      (if v
-        (* 60 (string-to-number (pop v))) ;; Minutes.
-        0)
-      (if v
-        (string-to-number (pop v)) ;; Seconds.
-        0))))
+      (cond
+        (v
+          (* 60 (string-to-number (pop v)))) ;; Minutes.
+        (t
+          0))
+      (cond
+        (v
+          (string-to-number (pop v))) ;; Seconds.
+        (t
+          0)))))
 
 
 (defun utimeclock-from-sec-total (sec-total)
@@ -117,17 +121,23 @@ This controls the values entered as well as behavior wrapping time values."
     (format-time-string
       (cond
         ((eq utimeclock-time-precision 'seconds)
-          (if utimeclock-12-hour-clock
-            "%l:%M:%S"
-            "%k:%M:%S"))
+          (cond
+            (utimeclock-12-hour-clock
+              "%l:%M:%S")
+            (t
+              "%k:%M:%S")))
         ((eq utimeclock-time-precision 'minutes)
-          (if utimeclock-12-hour-clock
-            "%l:%M"
-            "%k:%M"))
+          (cond
+            (utimeclock-12-hour-clock
+              "%l:%M")
+            (t
+              "%k:%M")))
         (t
-          (if utimeclock-12-hour-clock
-            "%l"
-            "%k"))))))
+          (cond
+            (utimeclock-12-hour-clock
+              "%l")
+            (t
+              "%k")))))))
 
 
 (defun utimeclock-accumulate-line (line allow-incomplete)
@@ -163,9 +173,11 @@ In this case the current time is used as the end time."
             (setq time-span
               (+
                 time-span
-                (if utimeclock-12-hour-clock
-                  (* 12 60 60)
-                  (* 24 60 60)))))
+                (cond
+                  (utimeclock-12-hour-clock
+                    (* 12 60 60))
+                  (t
+                    (* 24 60 60))))))
           (setq time-as-seconds (+ time-as-seconds time-span)))))
     (cons time-as-seconds time-was-incomplete)))
 
@@ -173,9 +185,11 @@ In this case the current time is used as the end time."
 (defun utimeclock-time-point-previous-no-eol ()
   "Return the starting point of `utimeclock-time-prefix' or nil."
   (save-excursion
-    (if (search-backward utimeclock-time-prefix nil t 1)
-      (point)
-      nil)))
+    (cond
+      ((search-backward utimeclock-time-prefix nil t 1)
+        (point))
+      (t
+        nil))))
 
 
 (defun utimeclock-time-point-previous ()
@@ -184,9 +198,11 @@ In this case the current time is used as the end time."
 This first moves to the line end."
   (save-excursion
     (end-of-line)
-    (if (search-backward utimeclock-time-prefix nil t 1)
-      (point)
-      nil)))
+    (cond
+      ((search-backward utimeclock-time-prefix nil t 1)
+        (point))
+      (t
+        nil))))
 
 
 (defun utimeclock-time-point-previous-prefix (time-pos)
@@ -320,12 +336,14 @@ Return the time immediately after clocking on for time starting at TIME-POS."
           (time-pos-next (+ time-pos (length utimeclock-time-prefix)))
           (line (utimeclock-extract-line-multi time-pos-next prefix))
           (last-pair (last (split-string line) 2)))
-        (if (eq (length last-pair) 2)
-          (pcase-let ((`(,t1 ,t2) last-pair))
-            (let ((t1-half (car (last (split-string t1 utimeclock-time-pair)))))
-              (let ((time-pair (concat t1-half utimeclock-time-pair t2)))
-                (utimeclock-from-sec-total (car (utimeclock-accumulate-line time-pair nil))))))
-          "started")))
+        (cond
+          ((eq (length last-pair) 2)
+            (pcase-let ((`(,t1 ,t2) last-pair))
+              (let ((t1-half (car (last (split-string t1 utimeclock-time-pair)))))
+                (let ((time-pair (concat t1-half utimeclock-time-pair t2)))
+                  (utimeclock-from-sec-total (car (utimeclock-accumulate-line time-pair nil)))))))
+          (t
+            "started"))))
     "unknown"))
 
 
@@ -378,9 +396,11 @@ accumulating all times in the buffer."
         (unless (zerop time-as-seconds-all)
           (concat
             (utimeclock-from-sec-total time-as-seconds-all)
-            (if time-was-incomplete-all
-              ".." ;; Show that time is ongoing.
-              "")))))))
+            (cond
+              (time-was-incomplete-all
+                "..") ;; Show that time is ongoing.
+              (t
+                ""))))))))
 
 
 ;;;###autoload
@@ -480,10 +500,12 @@ ensure `utimeclock-time-prefix' text."
     (when utimeclock-split-at-fill-column
       (when (>= (current-column) fill-column)
         (let ((time-pos (utimeclock-time-point-previous)))
-          (if time-pos
-            (let ((prefix (utimeclock-time-point-previous-prefix time-pos)))
-              (utimeclock-split-at-point prefix))
-            (message "Can not split the line %S not found!" utimeclock-time-prefix)))))))
+          (cond
+            (time-pos
+              (let ((prefix (utimeclock-time-point-previous-prefix time-pos)))
+                (utimeclock-split-at-point prefix)))
+            (t
+              (message "Can not split the line %S not found!" utimeclock-time-prefix))))))))
 
 
 ;;;###autoload
