@@ -309,7 +309,7 @@ PREFIX will be added to the beginning of the new line."
 
 Return the time immediately after clocking off for time starting at TIME-POS."
   (or
-    (with-demoted-errors
+    (with-demoted-errors "utimeclock: %S"
       (let*
         (
           (prefix (utimeclock-time-point-previous-prefix time-pos))
@@ -325,7 +325,7 @@ Return the time immediately after clocking off for time starting at TIME-POS."
 
 Return the time immediately after clocking on for time starting at TIME-POS."
   (or
-    (with-demoted-errors
+    (with-demoted-errors "utimeclock: %S"
       (let*
         (
           (prefix (utimeclock-time-point-previous-prefix time-pos))
