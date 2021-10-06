@@ -39,34 +39,31 @@
 ;; ---------------------------------------------------------------------------
 ;; Custom Variables
 
+(defgroup utimeclock nil "Configure time-tracking defaults." :group 'tools)
+
 (defcustom utimeclock-time-prefix "time:"
   "The prefix of a line used to store time.
 
 Note that space before this line is ignored."
-  :type 'string
-  :group 'utimeclock)
+  :type 'string)
 
 (defcustom utimeclock-time-pair "-"
   "The string used to pair up time ranges (must not contain spaces)."
-  :type 'string
-  :group 'utimeclock)
+  :type 'string)
 
 (defcustom utimeclock-split-at-fill-column t
-  "Split lines at `utimeclock-line-separator' when it exceeds `fill-column'."
-  :type 'boolean
-  :group 'utimeclock)
+  "Split lines with `utimeclock-line-separator' when they exceed `fill-column'."
+  :type 'boolean)
 
 (defcustom utimeclock-line-separator "\\"
   "The character used for line continuations."
-  :type 'string
-  :group 'utimeclock)
+  :type 'string)
 
 (defcustom utimeclock-12-hour-clock nil
   "Use 12 hour clock instead of a 24 hour clock.
 
 This controls the values entered as well as behavior wrapping time values."
-  :type 'boolean
-  :group 'utimeclock)
+  :type 'boolean)
 
 (defcustom utimeclock-time-precision 'minutes
   "The precision of report time in."
@@ -75,8 +72,7 @@ This controls the values entered as well as behavior wrapping time values."
   (choice
     (const :tag "Hours" hours)
     (const :tag "Minutes" minutes)
-    (const :tag "Seconds" seconds))
-  :group 'utimeclock)
+    (const :tag "Seconds" seconds)))
 
 
 ;; ---------------------------------------------------------------------------
