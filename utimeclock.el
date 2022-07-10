@@ -125,7 +125,7 @@ This controls the values entered as well as behavior wrapping time values."
 
 
 (defun utimeclock-accumulate-line (line allow-incomplete)
-  "Accumulate time ranges in LINE into '(time-as-seconds . time-was-incomplete).
+  "Accumulate time ranges in LINE into `(time-as-seconds . time-was-incomplete)'.
 
 When ALLOW-INCOMPLETE is not nil, allow a start time without a matching end.
 In this case the current time is used as the end time."
