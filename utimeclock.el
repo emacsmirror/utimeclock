@@ -479,5 +479,8 @@ ensure `utimeclock-time-prefix' text."
   (message "Time %S" (utimeclock-from-context-summary)))
 
 (provide 'utimeclock)
-
+;; Local Variables:
+;; fill-column: 99
+;; indent-tabs-mode: nil
+;; End:
 ;;; utimeclock.el ends here
