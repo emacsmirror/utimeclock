@@ -72,15 +72,15 @@ This controls the values entered as well as behavior wrapping time values."
   "Convert STR in the format '4:30:59' to the number of seconds as an int."
   (let ((v (split-string str ":")))
     (+
-     (* 3600 (string-to-number (pop v))) ;; Hours.
+     (* 3600 (string-to-number (pop v))) ; Hours.
      (cond
       (v
-       (* 60 (string-to-number (pop v)))) ;; Minutes.
+       (* 60 (string-to-number (pop v)))) ; Minutes.
       (t
        0))
      (cond
       (v
-       (string-to-number (pop v))) ;; Seconds.
+       (string-to-number (pop v))) ; Seconds.
       (t
        0)))))
 
@@ -215,10 +215,9 @@ TIME-POS should be the result of `utimeclock-time-point-previous'."
 
 (defun utimeclock-current-line-ends-with (str)
   "Return t when the current line ends with STR."
-  (let
-      ( ;; Line range.
-       (bol (line-beginning-position))
-       (eol (line-end-position)))
+  ;; Line range.
+  (let ((bol (line-beginning-position))
+        (eol (line-end-position)))
     (let ((eol-text (buffer-substring-no-properties (max bol (- eol (length str))) eol)))
       (string-equal str eol-text))))
 
@@ -334,12 +333,11 @@ accumulating all times in the buffer."
   (save-excursion
     (end-of-line)
     (save-match-data
-      (let
-          ( ;; Only allow incomplete time last, otherwise show error.
-           (time-was-incomplete-all nil)
-           (time-as-seconds-all 0)
-           (first-time t)
-           (time-pos nil))
+      ;; Only allow incomplete time last, otherwise show error.
+      (let ((time-was-incomplete-all nil)
+            (time-as-seconds-all 0)
+            (first-time t)
+            (time-pos nil))
 
         ;; Find start of comment.
         (while (and
@@ -368,7 +366,7 @@ accumulating all times in the buffer."
            (utimeclock-from-sec-total time-as-seconds-all)
            (cond
             (time-was-incomplete-all
-             "..") ;; Show that time is ongoing.
+             "..") ; Show that time is ongoing.
             (t
              ""))))))))
 
