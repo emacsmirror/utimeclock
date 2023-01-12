@@ -282,8 +282,7 @@ This takes `utimeclock-extract-line-multi' into account."
 PREFIX will be added to the beginning of the new line."
   (save-excursion
     (move-to-column fill-column)
-    (when (save-match-data
-            (search-backward " " (line-beginning-position) t 1))
+    (when (save-match-data (search-backward " " (line-beginning-position) t 1))
       (forward-char 1)
       (insert utimeclock-line-separator "\n" prefix " "))))
 
