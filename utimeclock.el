@@ -193,7 +193,7 @@ TIME-POS should be the result of `utimeclock-time-point-previous'."
     (goto-char time-pos)
     (concat
      ;; Text before time-prefix.
-     (buffer-substring-no-properties (line-beginning-position) time-pos)
+     (buffer-substring-no-properties (pos-bol) time-pos)
      ;; Indent the size of time-prefix as spaces.
      (utimeclock-buffer-range-to-spaces time-pos (+ time-pos (length utimeclock-time-prefix))))))
 
@@ -216,8 +216,8 @@ TIME-POS should be the result of `utimeclock-time-point-previous'."
 (defun utimeclock-current-line-ends-with (str)
   "Return t when the current line ends with STR."
   ;; Line range.
-  (let ((bol (line-beginning-position))
-        (eol (line-end-position)))
+  (let ((bol (pos-bol))
+        (eol (pos-eol)))
     (let ((eol-text (buffer-substring-no-properties (max bol (- eol (length str))) eol)))
       (string-equal str eol-text))))
 
@@ -248,17 +248,13 @@ therefore we can extract multiple lines into a single logical line of text.
 Strip PREFIX from each line (when not nil or an empty string)."
   (save-excursion
     (goto-char pos)
-    (let ((line (string-trim-right (buffer-substring-no-properties pos (line-end-position)))))
+    (let ((line (string-trim-right (buffer-substring-no-properties pos (pos-eol)))))
       (unless (or (null prefix) (zerop (length prefix)))
         (setq line (string-trim-left (string-remove-prefix prefix line))))
       (when (string-suffix-p utimeclock-line-separator line)
         (setq line (string-trim-right (string-remove-suffix utimeclock-line-separator line)))
         (when (zerop (forward-line 1))
-          (setq line
-                (concat
-                 line
-                 " "
-                 (utimeclock-extract-line-multi (line-beginning-position) prefix)))))
+          (setq line (concat line " " (utimeclock-extract-line-multi (pos-bol) prefix)))))
       line)))
 
 
@@ -272,7 +268,7 @@ This takes `utimeclock-extract-line-multi' into account."
       (let ((line (string-trim-right (buffer-substring-no-properties pos eol))))
         (when (string-suffix-p utimeclock-line-separator line)
           (when (zerop (forward-line 1))
-            (setq eol (utimeclock-end-of-line-multi (line-beginning-position))))))
+            (setq eol (utimeclock-end-of-line-multi (pos-bol))))))
       eol)))
 
 
@@ -282,7 +278,7 @@ This takes `utimeclock-extract-line-multi' into account."
 PREFIX will be added to the beginning of the new line."
   (save-excursion
     (move-to-column fill-column)
-    (when (save-match-data (search-backward " " (line-beginning-position) t 1))
+    (when (save-match-data (search-backward " " (pos-bol) t 1))
       (forward-char 1)
       (insert utimeclock-line-separator "\n" prefix " "))))
 
@@ -400,7 +396,7 @@ Otherwise add `utimeclock-time-prefix' and the time after it."
   (interactive)
   (let ((time-string (utimeclock-current-time-as-string))
         (time-pos (utimeclock-time-point-previous))
-        (init-bol (line-beginning-position))
+        (init-bol (pos-bol))
         (next-pos nil))
 
     ;; No time prefix, add one.
@@ -410,7 +406,7 @@ Otherwise add `utimeclock-time-prefix' and the time after it."
 
     (save-excursion
       (goto-char (utimeclock-end-of-line-multi time-pos))
-      (let ((eol (line-end-position)))
+      (let ((eol (pos-eol)))
         ;; Trim blank-space.
         (unless (eq (point) eol)
           (delete-region (point) eol)))
@@ -434,7 +430,7 @@ Otherwise add `utimeclock-time-prefix' and the time after it."
         (message "Clocked on! [%s]" (utimeclock-last-clock-on-duration time-pos))))
 
       ;; Set this before breaking the line.
-      (let ((is-matching-line (eq init-bol (line-beginning-position))))
+      (let ((is-matching-line (eq init-bol (pos-bol))))
 
         (when utimeclock-split-at-fill-column
           (when (>= (current-column) fill-column)
