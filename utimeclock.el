@@ -176,7 +176,7 @@ In this case the current time is used as the end time."
 
 This first moves to the line end."
   (save-excursion
-    (end-of-line)
+    (goto-char (pos-eol))
     (cond
      ((search-backward utimeclock-time-prefix nil t 1)
       (point))
@@ -198,10 +198,10 @@ TIME-POS should be the result of `utimeclock-time-point-previous'."
      (utimeclock-buffer-range-to-spaces time-pos (+ time-pos (length utimeclock-time-prefix))))))
 
 
-(defun utimeclock-line-end-position-nonblank ()
+(defun utimeclock-pos-eol-nonblank ()
   "Return the line end position (excluding white-space)."
   (save-excursion
-    (end-of-line)
+    (goto-char (pos-eol))
     (skip-chars-backward "[:blank:]")
     (point)))
 
@@ -209,7 +209,7 @@ TIME-POS should be the result of `utimeclock-time-point-previous'."
 (defun utimeclock-current-line-empty-p ()
   "Return t when the current line is empty."
   (save-excursion
-    (beginning-of-line)
+    (goto-char (pos-bol))
     (looking-at-p "[[:blank:]]*$")))
 
 
@@ -264,7 +264,7 @@ Strip PREFIX from each line (when not nil or an empty string)."
 This takes `utimeclock-extract-line-multi' into account."
   (save-excursion
     (goto-char pos)
-    (let ((eol (utimeclock-line-end-position-nonblank)))
+    (let ((eol (utimeclock-pos-eol-nonblank)))
       (let ((line (string-trim-right (buffer-substring-no-properties pos eol))))
         (when (string-suffix-p utimeclock-line-separator line)
           (when (zerop (forward-line 1))
@@ -326,7 +326,7 @@ Return the time immediately after clocking on for time starting at TIME-POS."
 Argument COMBINE-ALL-TIMES keeps searching backwards,
 accumulating all times in the buffer."
   (save-excursion
-    (end-of-line)
+    (goto-char (pos-eol))
     (save-match-data
       ;; Only allow incomplete time last, otherwise show error.
       (let ((time-was-incomplete-all nil)
