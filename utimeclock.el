@@ -76,9 +76,7 @@ This controls the values entered as well as behavior wrapping time values."
   "The precision of report time in."
   :type
   '(choice
-    (const :tag "Hours" hours)
-    (const :tag "Minutes" minutes)
-    (const :tag "Seconds" seconds)))
+    (const :tag "Hours" hours) (const :tag "Minutes" minutes) (const :tag "Seconds" seconds)))
 
 
 ;; ---------------------------------------------------------------------------
