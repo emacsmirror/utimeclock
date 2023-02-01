@@ -75,8 +75,9 @@ This controls the values entered as well as behavior wrapping time values."
 (defcustom utimeclock-time-precision 'minutes
   "The precision of report time in."
   :type
-  '(choice
-    (const :tag "Hours" hours) (const :tag "Minutes" minutes) (const :tag "Seconds" seconds)))
+  '(choice (const :tag "Hours" hours)
+           (const :tag "Minutes" minutes)
+           (const :tag "Seconds" seconds)))
 
 
 ;; ---------------------------------------------------------------------------
@@ -491,5 +492,6 @@ ensure `utimeclock-time-prefix' text."
 ;; Local Variables:
 ;; fill-column: 99
 ;; indent-tabs-mode: nil
+;; elisp-autofmt-format-quoted: nil
 ;; End:
 ;;; utimeclock.el ends here
