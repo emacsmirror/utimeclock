@@ -176,7 +176,7 @@ In this case the current time is used as the end time."
   "Return the starting point of `utimeclock-time-prefix' or nil."
   (save-excursion
     (cond
-     ((search-backward utimeclock-time-prefix nil t 1)
+     ((save-match-data (search-backward utimeclock-time-prefix nil t 1))
       (point))
      (t
       nil))))
@@ -188,7 +188,7 @@ This first moves to the line end."
   (save-excursion
     (goto-char (pos-eol))
     (cond
-     ((search-backward utimeclock-time-prefix nil t 1)
+     ((save-match-data (search-backward utimeclock-time-prefix nil t 1))
       (point))
      (t
       nil))))
