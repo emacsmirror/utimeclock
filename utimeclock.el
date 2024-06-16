@@ -377,8 +377,7 @@ When available, otherwise return nil."
   (cond
    ;; Use time from the active-region when set.
    ((use-region-p)
-    (save-restriction
-      (narrow-to-region (region-beginning) (region-end))
+    (with-restriction (region-beginning) (region-end)
       (save-excursion
         (goto-char (point-max))
         (format "(selected %s)" (utimeclock-from-context t)))))
