@@ -395,7 +395,7 @@ When available, otherwise return nil."
 Add time to the end of the current lines time or search backwards to find one.
 Otherwise add `utimeclock-time-prefix' and the time after it."
   (declare (important-return-value nil))
-  (interactive)
+  (interactive "*")
   (let ((time-string (utimeclock-current-time-as-string))
         (time-pos (utimeclock-time-point-previous))
         (init-bol (pos-bol))
@@ -453,7 +453,7 @@ Otherwise add `utimeclock-time-prefix' and the time after it."
 Unlike `utimeclock-toggle' this doesn't pair time ranges or
 ensure `utimeclock-time-prefix' text."
   (declare (important-return-value nil))
-  (interactive)
+  (interactive "*")
 
   (let ((time-string (utimeclock-current-time-as-string)))
     (insert time-string)
