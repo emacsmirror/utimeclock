@@ -71,18 +71,30 @@ This controls the values entered as well as behavior wrapping time values."
   "Convert STR in the format '4:30:59' to the number of seconds as an int."
   (declare (important-return-value t))
   (let ((v (save-match-data (split-string str ":"))))
-    (+
-     (* 3600 (string-to-number (pop v))) ; Hours.
-     (cond
-      (v
-       (* 60 (string-to-number (pop v)))) ; Minutes.
-      (t
-       0))
-     (cond
-      (v
-       (string-to-number (pop v))) ; Seconds.
-      (t
-       0)))))
+    (+ (* 3600 ; Hours.
+          (let ((n (string-to-number (pop v))))
+            (when (< 24 n)
+              (error "Time string has hours over 24: %s" str))
+            n))
+       (cond ; Minutes.
+        (v
+         (* 60
+            (let ((n (string-to-number (pop v))))
+              (when (<= 60 n)
+                (error "Time string has minutes at or over 60: %s" str))
+              n)))
+        (t
+         0))
+       (cond ; Seconds.
+        (v
+         (let ((n (string-to-number (pop v))))
+           (when (<= 60 n)
+             (error "Time string has seconds at or over 60: %s" str))
+           (when v
+             (error "Time string has more than 3 fields: %s" str))
+           n))
+        (t
+         0)))))
 
 (defun utimeclock-from-sec-total (sec-total)
   "Convert SEC-TOTAL to time format '4:30:59'."
