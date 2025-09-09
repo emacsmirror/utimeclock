@@ -170,7 +170,7 @@ In this case the current time is used as the end time."
                        (* 12 60 60))
                       (t
                        (* 24 60 60))))))
-          (setq time-as-seconds (+ time-as-seconds time-span)))))
+          (incf time-as-seconds time-span))))
     (cons time-as-seconds time-was-incomplete)))
 
 (defun utimeclock-time-point-previous-no-eol ()
@@ -367,7 +367,7 @@ accumulating all times in the buffer."
                          (utimeclock-accumulate-line line (not time-was-incomplete-all))))
               (when is-incomplete
                 (setq time-was-incomplete-all t))
-              (setq time-as-seconds-all (+ time-as-seconds-all time-as-seconds))))
+              (incf time-as-seconds-all time-as-seconds)))
 
           (goto-char time-pos))
 
