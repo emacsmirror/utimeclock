@@ -381,7 +381,7 @@ accumulating all times in the buffer."
                  (line (utimeclock-extract-line-multi time-pos-next prefix)))
 
             (pcase-let ((`(,time-as-seconds . ,is-incomplete)
-                         (utimeclock-accumulate-line line (not time-was-incomplete-all))))
+                         (utimeclock-accumulate-line line (null time-was-incomplete-all))))
               (when is-incomplete
                 (setq time-was-incomplete-all t))
               (incf time-as-seconds-all time-as-seconds)))
