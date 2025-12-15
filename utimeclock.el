@@ -87,6 +87,8 @@ This controls the values entered as well as behavior wrapping time values."
 (defun utimeclock-as-sec-total (str)
   "Convert STR in the format '4:30:59' to the number of seconds as an int."
   (declare (important-return-value t))
+  (when (string-empty-p str)
+    (error "Time string is empty"))
   (let ((v (save-match-data (split-string str ":"))))
     (+ (* 3600 ; Hours.
           (let ((n (string-to-number (pop v))))
