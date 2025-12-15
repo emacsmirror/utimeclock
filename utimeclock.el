@@ -84,7 +84,7 @@ This controls the values entered as well as behavior wrapping time values."
 ;; ---------------------------------------------------------------------------
 ;; Internal Functions/Macros
 
-(defun utimeclock-as-sec-total (str)
+(defun utimeclock--as-sec-total (str)
   "Convert STR in the format '4:30:59' to the number of seconds as an int."
   (declare (important-return-value t))
   (when (string-empty-p str)
@@ -115,7 +115,7 @@ This controls the values entered as well as behavior wrapping time values."
         (t
          0)))))
 
-(defun utimeclock-from-sec-total (sec-total)
+(defun utimeclock--from-sec-total (sec-total)
   "Convert SEC-TOTAL to time format '4:30:59'."
   (declare (important-return-value t))
   (let* ((h (/ sec-total 3600))
@@ -129,7 +129,7 @@ This controls the values entered as well as behavior wrapping time values."
      (t
       (format "%d" h)))))
 
-(defun utimeclock-current-time-as-string ()
+(defun utimeclock--current-time-as-string ()
   "Return the current time as a string."
   (declare (important-return-value t))
   (string-trim-left
@@ -154,7 +154,7 @@ This controls the values entered as well as behavior wrapping time values."
        (t
         "%k")))))))
 
-(defun utimeclock-accumulate-line (line allow-incomplete)
+(defun utimeclock--accumulate-line (line allow-incomplete)
   "Accumulate time ranges in LINE into `(time-as-seconds . time-was-incomplete)'.
 
 When ALLOW-INCOMPLETE is not nil, allow a start time without a matching end.
@@ -175,11 +175,11 @@ In this case the current time is used as the end time."
           ;; We could make this optional.
           (unless allow-incomplete
             (message "Incomplete time not allowed '%s'" line))
-          (setq time-end (utimeclock-current-time-as-string))
+          (setq time-end (utimeclock--current-time-as-string))
           (setq time-was-incomplete t))
 
         (let ((time-span
-               (- (utimeclock-as-sec-total time-end) (utimeclock-as-sec-total time-start))))
+               (- (utimeclock--as-sec-total time-end) (utimeclock--as-sec-total time-start))))
           ;; Wrap
           (when (< time-span 0)
             (setq time-span
@@ -192,7 +192,7 @@ In this case the current time is used as the end time."
           (incf time-as-seconds time-span))))
     (cons time-as-seconds time-was-incomplete)))
 
-(defun utimeclock-time-point-previous-no-eol ()
+(defun utimeclock--time-point-previous-no-eol ()
   "Return the starting point of `utimeclock-time-prefix' or nil."
   (declare (important-return-value t))
   (save-excursion
@@ -202,7 +202,7 @@ In this case the current time is used as the end time."
      (t
       nil))))
 
-(defun utimeclock-time-point-previous ()
+(defun utimeclock--time-point-previous ()
   "Return the starting point of `utimeclock-time-prefix' or nil.
 
 This first moves to the line end."
@@ -215,11 +215,11 @@ This first moves to the line end."
      (t
       nil))))
 
-(defun utimeclock-time-point-previous-prefix (time-pos)
+(defun utimeclock--time-point-previous-prefix (time-pos)
   "Return text at the line beginning, before `utimeclock-time-prefix'.
 
 This could be a comment for example, or a blank string if nothing is found.
-TIME-POS should be the result of `utimeclock-time-point-previous'."
+TIME-POS should be the result of `utimeclock--time-point-previous'."
   (declare (important-return-value t))
   (save-excursion
     (goto-char time-pos)
@@ -227,9 +227,9 @@ TIME-POS should be the result of `utimeclock-time-point-previous'."
      ;; Text before time-prefix.
      (buffer-substring-no-properties (pos-bol) time-pos)
      ;; Indent the size of time-prefix as spaces.
-     (utimeclock-buffer-range-to-spaces time-pos (+ time-pos (length utimeclock-time-prefix))))))
+     (utimeclock--buffer-range-to-spaces time-pos (+ time-pos (length utimeclock-time-prefix))))))
 
-(defun utimeclock-pos-eol-nonblank ()
+(defun utimeclock--pos-eol-nonblank ()
   "Return the line end position (excluding white-space)."
   (declare (important-return-value t))
   (save-excursion
@@ -237,14 +237,14 @@ TIME-POS should be the result of `utimeclock-time-point-previous'."
     (skip-chars-backward "[:blank:]")
     (point)))
 
-(defun utimeclock-current-line-empty-p ()
+(defun utimeclock--current-line-empty-p ()
   "Return t when the current line is empty."
   (declare (important-return-value t))
   (save-excursion
     (goto-char (pos-bol))
     (looking-at-p "[[:blank:]]*$")))
 
-(defun utimeclock-current-line-ends-with (str)
+(defun utimeclock--current-line-ends-with (str)
   "Return t when the current line ends with STR."
   (declare (important-return-value t))
   ;; Line range.
@@ -253,7 +253,7 @@ TIME-POS should be the result of `utimeclock-time-point-previous'."
     (let ((eol-text (buffer-substring-no-properties (max bol (- eol (length str))) eol)))
       (string-equal str eol-text))))
 
-(defun utimeclock-buffer-range-to-spaces (beg end)
+(defun utimeclock--buffer-range-to-spaces (beg end)
   "Return a string of spaces the length of two ranges in the buffer.
 
 Note that this is often simply BEG subtracted from END,
@@ -270,7 +270,7 @@ however when tabs are used the results will be different."
              (current-column))))
       (make-string (- end-col beg-col) ?\s))))
 
-(defun utimeclock-extract-line-multi (pos prefix)
+(defun utimeclock--extract-line-multi (pos prefix)
   "Extract the line at POS until the line end.
 
 Lines that end with `utimeclock-line-separator' are considered part of the line,
@@ -286,24 +286,24 @@ Strip PREFIX from each line (when not nil or an empty string)."
       (when (string-suffix-p utimeclock-line-separator line)
         (setq line (string-trim-right (string-remove-suffix utimeclock-line-separator line)))
         (when (zerop (forward-line 1))
-          (setq line (concat line " " (utimeclock-extract-line-multi (pos-bol) prefix)))))
+          (setq line (concat line " " (utimeclock--extract-line-multi (pos-bol) prefix)))))
       line)))
 
-(defun utimeclock-end-of-line-multi (pos)
+(defun utimeclock--end-of-line-multi (pos)
   "Return the end of line position of POS.
 
-This takes `utimeclock-extract-line-multi' into account."
+This takes `utimeclock--extract-line-multi' into account."
   (declare (important-return-value t))
   (save-excursion
     (goto-char pos)
-    (let ((eol (utimeclock-pos-eol-nonblank)))
+    (let ((eol (utimeclock--pos-eol-nonblank)))
       (let ((line (string-trim-right (buffer-substring-no-properties pos eol))))
         (when (string-suffix-p utimeclock-line-separator line)
           (when (zerop (forward-line 1))
-            (setq eol (utimeclock-end-of-line-multi (pos-bol))))))
+            (setq eol (utimeclock--end-of-line-multi (pos-bol))))))
       eol)))
 
-(defun utimeclock-split-at-point (prefix)
+(defun utimeclock--split-at-point (prefix)
   "Split the last time-range onto the next line if it exceeds the `fill-column'.
 
 PREFIX will be added to the beginning of the new line."
@@ -314,28 +314,28 @@ PREFIX will be added to the beginning of the new line."
       (forward-char 1)
       (insert utimeclock-line-separator "\n" prefix " "))))
 
-(defun utimeclock-last-clock-off-duration (time-pos)
+(defun utimeclock--last-clock-off-duration (time-pos)
   "Time spent (working).
 
 Return the time immediately after clocking off for time starting at TIME-POS."
   (declare (important-return-value t))
   (or (with-demoted-errors "utimeclock: %S"
-        (let* ((prefix (utimeclock-time-point-previous-prefix time-pos))
+        (let* ((prefix (utimeclock--time-point-previous-prefix time-pos))
                (time-pos-next (+ time-pos (length utimeclock-time-prefix)))
-               (line (utimeclock-extract-line-multi time-pos-next prefix))
+               (line (utimeclock--extract-line-multi time-pos-next prefix))
                (time-pair (car (last (save-match-data (split-string line))))))
-          (utimeclock-from-sec-total (car (utimeclock-accumulate-line time-pair nil)))))
+          (utimeclock--from-sec-total (car (utimeclock--accumulate-line time-pair nil)))))
       "unknown"))
 
-(defun utimeclock-last-clock-on-duration (time-pos)
+(defun utimeclock--last-clock-on-duration (time-pos)
   "Time spent (having a break).
 
 Return the time immediately after clocking on for time starting at TIME-POS."
   (declare (important-return-value t))
   (or (with-demoted-errors "utimeclock: %S"
-        (let* ((prefix (utimeclock-time-point-previous-prefix time-pos))
+        (let* ((prefix (utimeclock--time-point-previous-prefix time-pos))
                (time-pos-next (+ time-pos (length utimeclock-time-prefix)))
-               (line (utimeclock-extract-line-multi time-pos-next prefix))
+               (line (utimeclock--extract-line-multi time-pos-next prefix))
                (last-pair (last (save-match-data (split-string line)) 2)))
           (cond
            ((eq (length last-pair) 2)
@@ -343,7 +343,8 @@ Return the time immediately after clocking on for time starting at TIME-POS."
               (let ((t1-half
                      (car (last (save-match-data (split-string t1 utimeclock-time-pair))))))
                 (let ((time-pair (concat t1-half utimeclock-time-pair t2)))
-                  (utimeclock-from-sec-total (car (utimeclock-accumulate-line time-pair nil)))))))
+                  (utimeclock--from-sec-total
+                   (car (utimeclock--accumulate-line time-pair nil)))))))
            (t
             "started"))))
       "unknown"))
@@ -374,16 +375,16 @@ accumulating all times in the buffer."
                 (or combine-all-times first-time)
                 ;; Find the time prefix, no end-of-line so
                 ;; calling a second time doesn't find the same time.
-                (setq time-pos (utimeclock-time-point-previous-no-eol)))
+                (setq time-pos (utimeclock--time-point-previous-no-eol)))
 
           (setq first-time nil)
 
-          (let* ((prefix (utimeclock-time-point-previous-prefix time-pos))
+          (let* ((prefix (utimeclock--time-point-previous-prefix time-pos))
                  (time-pos-next (+ time-pos (length utimeclock-time-prefix)))
-                 (line (utimeclock-extract-line-multi time-pos-next prefix)))
+                 (line (utimeclock--extract-line-multi time-pos-next prefix)))
 
             (pcase-let ((`(,time-as-seconds . ,is-incomplete)
-                         (utimeclock-accumulate-line line (null time-was-incomplete-all))))
+                         (utimeclock--accumulate-line line (null time-was-incomplete-all))))
               (when is-incomplete
                 (setq time-was-incomplete-all t))
               (incf time-as-seconds-all time-as-seconds)))
@@ -392,7 +393,7 @@ accumulating all times in the buffer."
 
         (unless (zerop time-as-seconds-all)
           (concat
-           (utimeclock-from-sec-total time-as-seconds-all)
+           (utimeclock--from-sec-total time-as-seconds-all)
            (cond
             (time-was-incomplete-all
              "..") ; Show that time is ongoing.
@@ -427,8 +428,8 @@ Add time to the end of the current lines time or search backwards to find one.
 Otherwise add `utimeclock-time-prefix' and the time after it."
   (declare (important-return-value nil))
   (interactive "*")
-  (let ((time-string (utimeclock-current-time-as-string))
-        (time-pos (utimeclock-time-point-previous))
+  (let ((time-string (utimeclock--current-time-as-string))
+        (time-pos (utimeclock--time-point-previous))
         (init-bol (pos-bol))
         (next-pos nil))
 
@@ -438,7 +439,7 @@ Otherwise add `utimeclock-time-prefix' and the time after it."
       (insert utimeclock-time-prefix " "))
 
     (save-excursion
-      (goto-char (utimeclock-end-of-line-multi time-pos))
+      (goto-char (utimeclock--end-of-line-multi time-pos))
       (let ((eol (pos-eol)))
         ;; Trim blank-space.
         (unless (eq (point) eol)
@@ -446,29 +447,29 @@ Otherwise add `utimeclock-time-prefix' and the time after it."
 
       (cond
        ;; End the current time-span?
-       ((utimeclock-current-line-ends-with utimeclock-time-pair)
+       ((utimeclock--current-line-ends-with utimeclock-time-pair)
         (insert time-string)
-        (message "Clocked off! [%s]" (utimeclock-last-clock-off-duration time-pos)))
+        (message "Clocked off! [%s]" (utimeclock--last-clock-off-duration time-pos)))
 
        ;; Begin a new time-span?
        (t
         ;; Start new line, add comment if needed (based on previous line).
-        (when (utimeclock-current-line-empty-p)
-          (let ((prefix (utimeclock-time-point-previous-prefix time-pos)))
+        (when (utimeclock--current-line-empty-p)
+          (let ((prefix (utimeclock--time-point-previous-prefix time-pos)))
             (insert prefix)))
 
         (insert " " time-string utimeclock-time-pair)
 
         ;; Clock on message.
-        (message "Clocked on! [%s]" (utimeclock-last-clock-on-duration time-pos))))
+        (message "Clocked on! [%s]" (utimeclock--last-clock-on-duration time-pos))))
 
       ;; Set this before breaking the line.
       (let ((is-matching-line (eq init-bol (pos-bol))))
 
         (when utimeclock-split-at-fill-column
           (when (>= (current-column) fill-column)
-            (let ((prefix (utimeclock-time-point-previous-prefix time-pos)))
-              (utimeclock-split-at-point prefix))))
+            (let ((prefix (utimeclock--time-point-previous-prefix time-pos)))
+              (utimeclock--split-at-point prefix))))
 
         ;; Move the cursor if it is on the same line.
         (when is-matching-line
@@ -486,16 +487,16 @@ ensure `utimeclock-time-prefix' text."
   (declare (important-return-value nil))
   (interactive "*")
 
-  (let ((time-string (utimeclock-current-time-as-string)))
+  (let ((time-string (utimeclock--current-time-as-string)))
     (insert time-string)
 
     (when utimeclock-split-at-fill-column
       (when (>= (current-column) fill-column)
-        (let ((time-pos (utimeclock-time-point-previous)))
+        (let ((time-pos (utimeclock--time-point-previous)))
           (cond
            (time-pos
-            (let ((prefix (utimeclock-time-point-previous-prefix time-pos)))
-              (utimeclock-split-at-point prefix)))
+            (let ((prefix (utimeclock--time-point-previous-prefix time-pos)))
+              (utimeclock--split-at-point prefix)))
            (t
             (message "Can not split the line %S not found!" utimeclock-time-prefix))))))))
 
