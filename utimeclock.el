@@ -15,7 +15,7 @@
 
 ;;; Usage:
 
-;; ;; Bind Ctrl-Alt-t to clock on/off.
+;; ;; Bind F5 to clock on/off.
 ;; (global-set-key (kbd "<f5>") 'utimeclock-toggle)
 ;; (global-set-key (kbd "<f6>") 'utimeclock-show-summary)
 
@@ -74,7 +74,7 @@ This controls the values entered as well as behavior wrapping time values."
   :type 'boolean)
 
 (defcustom utimeclock-time-precision 'minutes
-  "The precision of report time in."
+  "The time precision to use for reports."
   :type
   '(choice (const :tag "Hours" hours)
            (const :tag "Minutes" minutes)
@@ -352,7 +352,7 @@ Return the time immediately after clocking on for time starting at TIME-POS."
 
 ;;;###autoload
 (defun utimeclock-from-context (combine-all-times)
-  "Search for STR, accumulate all times after it, return the accumulated time.
+  "Return the accumulated time before the current line ending.
 
 Argument COMBINE-ALL-TIMES keeps searching backwards,
 accumulating all times in the buffer."
