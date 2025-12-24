@@ -169,9 +169,9 @@ In this case the current time is used as the end time."
       (pcase-let ((`(,time-start ,time-end)
                    (save-match-data (split-string time-pair time-pair-sep))))
         (setq time-was-incomplete nil)
-        ;; `time-end' will be null when there was no dash in the string.
-        ;; allow this for the end-string.
-        (when (or (null time-end) (string-equal time-end ""))
+        ;; `time-end' will be null when there was no `utimeclock-time-pair' separator.
+        ;; Allow this for the end-string.
+        (when (or (null time-end) (string-empty-p time-end))
           ;; We could make this optional.
           (unless allow-incomplete
             (message "Incomplete time not allowed '%s'" line))
@@ -254,10 +254,9 @@ TIME-POS should be the result of `utimeclock--time-point-previous'."
       (string-equal str eol-text))))
 
 (defun utimeclock--buffer-range-to-spaces (beg end)
-  "Return a string of spaces the length of two ranges in the buffer.
+  "Return a string of spaces matching the visual column width between BEG and END.
 
-Note that this is often simply BEG subtracted from END,
-however when tabs are used the results will be different."
+This accounts for tab characters which may occupy multiple columns."
   (declare (important-return-value t))
   (save-excursion
     (let ((beg-col
@@ -281,7 +280,7 @@ Strip PREFIX from each line (when not nil or an empty string)."
   (save-excursion
     (goto-char pos)
     (let ((line (string-trim-right (buffer-substring-no-properties pos (pos-eol)))))
-      (unless (or (null prefix) (zerop (length prefix)))
+      (unless (or (null prefix) (string-empty-p prefix))
         (setq line (string-trim-left (string-remove-prefix prefix line))))
       (when (string-suffix-p utimeclock-line-separator line)
         (setq line (string-trim-right (string-remove-suffix utimeclock-line-separator line)))
