@@ -92,8 +92,8 @@ This controls the values entered as well as behavior wrapping time values."
   (let ((v (save-match-data (split-string str ":"))))
     (+ (* 3600 ; Hours.
           (let ((n (string-to-number (pop v))))
-            (when (< 24 n)
-              (error "Time string has hours over 24: %s" str))
+            (when (<= 24 n)
+              (error "Time string has hours at or over 24: %s" str))
             n))
        (cond ; Minutes.
         (v
